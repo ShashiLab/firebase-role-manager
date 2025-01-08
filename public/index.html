@@ -1,579 +1,590 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Firebase Claims Manager Enterprise</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <style>
-        
-        
-        :root {
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
-            --secondary: #64748b;
-            --accent: #0ea5e9;
-            --background: #0f172a;
-            --surface: #1e293b;
-            --surface-secondary: #334155;
-            --text: #f8fafc;
-            --text-secondary: #cbd5e1;
-            --error: #dc2626;
-            --success: #16a34a;
-            --warning: #eab308;
-            --border-radius: 0.5rem;
-            --transition: all 0.2s ease-in-out;
-        }
+      :root {
+        --primary: #2563eb;
+        --primary-hover: #1d4ed8;
+        --secondary: #64748b;
+        --accent: #0ea5e9;
+        --background: #0f172a;
+        --surface: #1e293b;
+        --surface-secondary: #334155;
+        --text: #f8fafc;
+        --text-secondary: #cbd5e1;
+        --error: #dc2626;
+        --success: #16a34a;
+        --warning: #eab308;
+        --border-radius: 0.5rem;
+        --transition: all 0.2s ease-in-out;
+      }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        body {
-            margin: 0;
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background: var(--background);
-            color: var(--text);
-            line-height: 1.5;
-        }
+      body {
+        margin: 0;
+        font-family: "Inter", system-ui, -apple-system, sans-serif;
+        background: var(--background);
+        color: var(--text);
+        line-height: 1.5;
+      }
 
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 1.5rem;
-        }
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 1.5rem;
+      }
 
-        .navbar {
-            background: var(--surface);
-            padding: 1rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 
-                        0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
+      .navbar {
+        background: var(--surface);
+        padding: 1rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+          0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
 
-        .navbar-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 1rem;
-        }
+      .navbar-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+      }
 
-        .navbar-brand {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text);
-        }
+      .navbar-brand {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text);
+      }
 
-        .navbar-brand i {
-            color: var(--primary);
-        }
+      .navbar-brand i {
+        color: var(--primary);
+      }
 
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        margin-top: 2rem;
+      }
+
+      @media (min-width: 1024px) {
         .grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-            margin-top: 2rem;
+          grid-template-columns: 3fr 2fr;
         }
+      }
 
-        @media (min-width: 1024px) {
-            .grid {
-                grid-template-columns: 3fr 2fr;
-            }
-        }
+      .card {
+        background: var(--surface);
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+          0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        border: 1px solid var(--surface-secondary);
+      }
 
-        .card {
-            background: var(--surface);
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-                        0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            border: 1px solid var(--surface-secondary);
-        }
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+      }
 
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
+      .card-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
 
-        .card-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--text);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
+      .user-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
 
-        .user-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
+      .user-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        background: var(--surface-secondary);
+        border-radius: var(--border-radius);
+        transition: var(--transition);
+        border: 1px solid transparent;
+      }
 
-        .user-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem;
-            background: var(--surface-secondary);
-            border-radius: var(--border-radius);
-            transition: var(--transition);
-            border: 1px solid transparent;
-        }
+      .user-item:hover {
+        border-color: var(--primary);
+        transform: translateY(-1px);
+      }
 
-        .user-item:hover {
-            border-color: var(--primary);
-            transform: translateY(-1px);
-        }
+      .user-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+      }
 
-        .user-info {
-            display: flex;
-            flex-direction: column;
-            gap: 0.25rem;
-        }
+      .user-email {
+        font-weight: 500;
+      }
 
-        .user-email {
-            font-weight: 500;
-        }
+      .user-uid {
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+      }
 
-        .user-uid {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-        }
+      .badge {
+        padding: 0.375rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+      }
 
-        .badge {
-            padding: 0.375rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.875rem;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 0.375rem;
-        }
+      .badge i {
+        font-size: 0.75rem;
+      }
 
-        .badge i {
-            font-size: 0.75rem;
-        }
+      .badge-admin {
+        background: var(--primary);
+        color: white;
+      }
 
-        .badge-admin {
-            background: var(--primary);
-            color: white;
-        }
+      .badge-moderator {
+        background: var(--accent);
+        color: white;
+      }
 
-        .badge-moderator {
-            background: var(--accent);
-            color: white;
-        }
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
 
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
+      .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--text);
+        font-weight: 500;
+      }
 
-        .form-label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: var(--text);
-            font-weight: 500;
-        }
+      .form-select {
+        width: 100%;
+        padding: 0.75rem;
+        border-radius: var(--border-radius);
+        background: var(--surface-secondary);
+        border: 1px solid var(--surface-secondary);
+        color: var(--text);
+        font-size: 1rem;
+        transition: var(--transition);
+      }
 
-        .form-select {
-            width: 100%;
-            padding: 0.75rem;
-            border-radius: var(--border-radius);
-            background: var(--surface-secondary);
-            border: 1px solid var(--surface-secondary);
-            color: var(--text);
-            font-size: 1rem;
-            transition: var(--transition);
-        }
+      .form-select:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+      }
 
-        .form-select:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
-        }
+      .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: var(--border-radius);
+        border: none;
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 0.875rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: var(--transition);
+      }
 
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: var(--border-radius);
-            border: none;
-            cursor: pointer;
-            font-weight: 500;
-            font-size: 0.875rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: var(--transition);
-        }
+      .btn i {
+        font-size: 1rem;
+      }
 
-        .btn i {
-            font-size: 1rem;
-        }
+      .btn-primary {
+        background: var(--primary);
+        color: white;
+      }
 
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
+      .btn-primary:hover {
+        background: var(--primary-hover);
+      }
 
-        .btn-primary:hover {
-            background: var(--primary-hover);
-        }
+      .btn-danger {
+        background: var(--error);
+        color: white;
+      }
 
-        .btn-danger {
-            background: var(--error);
-            color: white;
-        }
+      .btn-danger:hover {
+        background: #b91c1c;
+      }
 
-        .btn-danger:hover {
-            background: #b91c1c;
-        }
+      .btn-group {
+        display: flex;
+        gap: 0.75rem;
+        margin-top: 1.5rem;
+      }
 
-        .btn-group {
-            display: flex;
-            gap: 0.75rem;
-            margin-top: 1.5rem;
-        }
+      .modal-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        backdrop-filter: blur(4px);
+      }
 
-        .modal-backdrop {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            backdrop-filter: blur(4px);
-        }
+      .modal {
+        background: var(--surface);
+        padding: 2rem;
+        border-radius: var(--border-radius);
+        width: 90%;
+        max-width: 500px;
+        border: 1px solid var(--surface-secondary);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
 
-        .modal {
-            background: var(--surface);
-            padding: 2rem;
-            border-radius: var(--border-radius);
-            width: 90%;
-            max-width: 500px;
-            border: 1px solid var(--surface-secondary);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
-                       0 10px 10px -5px rgba(0, 0, 0, 0.04);
-        }
+      .modal-header {
+        margin-bottom: 1.5rem;
+      }
 
-        .modal-header {
-            margin-bottom: 1.5rem;
-        }
+      .modal-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--text);
+      }
 
-        .modal-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--text);
-        }
+      .toast {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        padding: 1rem 1.5rem;
+        border-radius: var(--border-radius);
+        color: white;
+        display: none;
+        align-items: center;
+        gap: 0.75rem;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        z-index: 1000;
+        animation: slideIn 0.3s ease-out;
+      }
 
-        .toast {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            padding: 1rem 1.5rem;
-            border-radius: var(--border-radius);
-            color: white;
-            display: none;
-            align-items: center;
-            gap: 0.75rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-                       0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            z-index: 1000;
-            animation: slideIn 0.3s ease-out;
+      @keyframes slideIn {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
         }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
 
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
+      .toast-success {
+        background: var(--success);
+      }
 
-        .toast-success {
-            background: var(--success);
-        }
+      .toast-error {
+        background: var(--error);
+      }
 
-        .toast-error {
-            background: var(--error);
-        }
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+      }
 
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
+      .stat-card {
+        background: var(--surface-secondary);
+        padding: 1.5rem;
+        border-radius: var(--border-radius);
+        text-align: center;
+        transition: var(--transition);
+        border: 1px solid transparent;
+      }
 
-        .stat-card {
-            background: var(--surface-secondary);
-            padding: 1.5rem;
-            border-radius: var(--border-radius);
-            text-align: center;
-            transition: var(--transition);
-            border: 1px solid transparent;
-        }
+      .stat-card:hover {
+        border-color: var(--primary);
+        transform: translateY(-2px);
+      }
 
-        .stat-card:hover {
-            border-color: var(--primary);
-            transform: translateY(-2px);
-        }
+      .stat-value {
+        font-size: 2rem;
+        font-weight: bold;
+        color: var(--primary);
+        margin-bottom: 0.5rem;
+      }
 
-        .stat-value {
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
+      .stat-label {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.375rem;
+      }
 
-        .stat-label {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.375rem;
-        }
+      .loading {
+        opacity: 0.7;
+        pointer-events: none;
+        position: relative;
+      }
 
-        .loading {
-            opacity: 0.7;
-            pointer-events: none;
-            position: relative;
-        }
+      .loading::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 1.5rem;
+        height: 1.5rem;
+        border: 2px solid var(--text);
+        border-top-color: transparent;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
 
-        .loading::after {
-            content: "";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 1.5rem;
-            height: 1.5rem;
-            border: 2px solid var(--text);
-            border-top-color: transparent;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
         }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <nav class="navbar">
-        <div class="container navbar-content">
-            <div class="navbar-brand">
-                <i class="fas fa-shield-alt"></i>
-                <span>Firebase Claims Manager Enterprise</span>
-            </div>
-            <button class="btn btn-primary" onclick="loadUsers()">
-                <i class="fas fa-sync-alt"></i>
-                Refresh Users
-            </button>
+      <div class="container navbar-content">
+        <div class="navbar-brand">
+          <i class="fas fa-shield-alt"></i>
+          <span>Firebase Claims Manager Enterprise</span>
         </div>
+        <button class="btn btn-primary" onclick="loadUsers()">
+          <i class="fas fa-sync-alt"></i>
+          Refresh Users
+        </button>
+      </div>
     </nav>
 
     <div class="container">
-        <div class="grid">
-            <!-- Users List -->
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title">
-                        <i class="fas fa-users"></i>
-                        Users with Custom Claims
-                    </h2>
-                </div>
-                <div id="usersList" class="user-list"></div>
-            </div>
-
-            <!-- Management Section -->
-            <div>
-                <!-- Role Manager -->
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">
-                            <i class="fas fa-user-cog"></i>
-                            Role Manager
-                        </h2>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Select User</label>
-                        <select id="userSelect" class="form-select">
-                            <option value="">Select a user...</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Role</label>
-                        <select id="roleSelect" class="form-select">
-                            <option value="admin">Admin</option>
-                            <option value="moderator">Moderator</option>
-                        </select>
-                    </div>
-
-                    <div class="btn-group">
-                        <button onclick="confirmAction('remove')" class="btn btn-danger">
-                            <i class="fas fa-trash-alt"></i>
-                            Remove Role
-                        </button>
-                        <button onclick="confirmAction('set')" class="btn btn-primary">
-                            <i class="fas fa-user-shield"></i>
-                            Set Role
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Stats -->
-                <div class="card" style="margin-top: 1.5rem;">
-                    <div class="card-header">
-                        <h2 class="card-title">
-                            <i class="fas fa-chart-pie"></i>
-                            Statistics
-                        </h2>
-                    </div>
-                    <div class="stats">
-                        <div class="stat-card">
-                            <div id="adminCount" class="stat-value">0</div>
-                            <div class="stat-label">
-                                <i class="fas fa-user-shield"></i>
-                                Admins
-                            </div>
-                        </div>
-                        <div class="stat-card">
-                            <div id="moderatorCount" class="stat-value">0</div>
-                            <div class="stat-label">
-                                <i class="fas fa-user-edit"></i>
-                                Moderators
-                            </div>
-                        </div>
-                        <div class="stat-card">
-                            <div id="totalCount" class="stat-value">0</div>
-                            <div class="stat-label">
-                                <i class="fas fa-users"></i>
-                                Total Users
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      <div class="grid">
+        <!-- Users List -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">
+              <i class="fas fa-users"></i>
+              Users with Custom Claims
+            </h2>
+          </div>
+          <div id="usersList" class="user-list"></div>
         </div>
+
+        <!-- Management Section -->
+        <div>
+          <!-- Role Manager -->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">
+                <i class="fas fa-user-cog"></i>
+                Role Manager
+              </h2>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Select User</label>
+              <select id="userSelect" class="form-select">
+                <option value="">Select a user...</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Role</label>
+              <select id="roleSelect" class="form-select">
+                <option value="admin">Admin</option>
+                <option value="moderator">Moderator</option>
+              </select>
+            </div>
+
+            <div class="btn-group">
+              <button onclick="confirmAction('remove')" class="btn btn-danger">
+                <i class="fas fa-trash-alt"></i>
+                Remove Role
+              </button>
+              <button onclick="confirmAction('set')" class="btn btn-primary">
+                <i class="fas fa-user-shield"></i>
+                Set Role
+              </button>
+            </div>
+          </div>
+
+          <!-- Stats -->
+          <div class="card" style="margin-top: 1.5rem">
+            <div class="card-header">
+              <h2 class="card-title">
+                <i class="fas fa-chart-pie"></i>
+                Statistics
+              </h2>
+            </div>
+            <div class="stats">
+              <div class="stat-card">
+                <div id="adminCount" class="stat-value">0</div>
+                <div class="stat-label">
+                  <i class="fas fa-user-shield"></i>
+                  Admins
+                </div>
+              </div>
+              <div class="stat-card">
+                <div id="moderatorCount" class="stat-value">0</div>
+                <div class="stat-label">
+                  <i class="fas fa-user-edit"></i>
+                  Moderators
+                </div>
+              </div>
+              <div class="stat-card">
+                <div id="totalCount" class="stat-value">0</div>
+                <div class="stat-label">
+                  <i class="fas fa-users"></i>
+                  Total Users
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-<!-- Modal -->
-<div id="confirmModal" class="modal-backdrop">
-    <div class="modal">
+    <!-- Modal -->
+    <div id="confirmModal" class="modal-backdrop">
+      <div class="modal">
         <div class="modal-header">
-            <h3 class="modal-title">Confirm Action</h3>
+          <h3 class="modal-title">Confirm Action</h3>
         </div>
         <p id="confirmMessage"></p>
         <div class="btn-group">
-            <button onclick="cancelAction()" class="btn btn-danger">
-                <i class="fas fa-times"></i>
-                Cancel
-            </button>
-            <button id="confirmButton" onclick="executeAction()" class="btn btn-primary">
-                <i class="fas fa-check"></i>
-                Confirm
-            </button>
+          <button onclick="cancelAction()" class="btn btn-danger">
+            <i class="fas fa-times"></i>
+            Cancel
+          </button>
+          <button
+            id="confirmButton"
+            onclick="executeAction()"
+            class="btn btn-primary"
+          >
+            <i class="fas fa-check"></i>
+            Confirm
+          </button>
         </div>
+      </div>
     </div>
-</div>
 
-<!-- Toast -->
-<div id="toast" class="toast"></div>
+    <!-- Toast -->
+    <div id="toast" class="toast"></div>
 
-<script>
-    let currentAction = null;
-    let selectedUser = null;
-    let isLoading = false;
+    <script>
+      let currentAction = null;
+      let selectedUser = null;
+      let isLoading = false;
 
-    window.onload = async () => {
+      window.onload = async () => {
         await loadUsers();
         await loadAllUsers();
-    };
+      };
 
-    async function setLoading(element, loading) {
+      async function setLoading(element, loading) {
         if (loading) {
-            element.classList.add('loading');
-            element.disabled = true;
+          element.classList.add("loading");
+          element.disabled = true;
         } else {
-            element.classList.remove('loading');
-            element.disabled = false;
+          element.classList.remove("loading");
+          element.disabled = false;
         }
-    }
+      }
 
-    async function loadUsers() {
-        const usersList = document.getElementById('usersList');
+      async function loadUsers() {
+        const usersList = document.getElementById("usersList");
         try {
-            setLoading(usersList, true);
-            const response = await fetch('/api/users-with-claims');
-            const data = await response.json();
-            if (data.success) {
-                displayUsers(data.users);
-                updateStats(data.users);
-            } else {
-                showToast(data.message, 'error');
-            }
+          setLoading(usersList, true);
+          const response = await fetch("/api/users-with-claims");
+          const data = await response.json();
+          if (data.success) {
+            displayUsers(data.users);
+            updateStats(data.users);
+          } else {
+            showToast(data.message, "error");
+          }
         } catch (error) {
-            showToast('Failed to load users: ' + error.message, 'error');
+          showToast("Failed to load users: " + error.message, "error");
         } finally {
-            setLoading(usersList, false);
+          setLoading(usersList, false);
         }
-    }
+      }
 
-    async function loadAllUsers() {
-        const userSelect = document.getElementById('userSelect');
+      async function loadAllUsers() {
+        const userSelect = document.getElementById("userSelect");
         try {
-            setLoading(userSelect, true);
-            const response = await fetch('/api/all-users');
-            const data = await response.json();
-            if (data.success) {
-                populateUserSelect(data.users);
-                
-                animateValue('totalCount', data.users.length);
-            }
+          setLoading(userSelect, true);
+          const response = await fetch("/api/all-users");
+          const data = await response.json();
+          if (data.success) {
+            populateUserSelect(data.users);
+            animateValue("totalCount", data.users.length);
+          }
         } catch (error) {
-            showToast('Failed to load all users: ' + error.message, 'error');
+          showToast("Failed to load all users: " + error.message, "error");
         } finally {
-            setLoading(userSelect, false);
+          setLoading(userSelect, false);
         }
-    }
+      }
 
-    function updateStats(users) {
+      function getUserRole(claims) {
+        if (!claims) return null;
+        if (claims.admin) return "admin";
+        if (claims.moderator) return "moderator";
+        return null;
+      }
+
+      function updateStats(users) {
         const stats = {
-            admin: 0,
-            moderator: 0
+          admin: 0,
+          moderator: 0,
         };
 
-        users.forEach(user => {
-            if (user.claims && user.claims.role) {
-                stats[user.claims.role]++;
-            }
+        users.forEach((user) => {
+          if (user.claims) {
+            if (user.claims.admin) stats.admin++;
+            if (user.claims.moderator) stats.moderator++;
+          }
         });
 
-        
-        animateValue('adminCount', stats.admin);
-        animateValue('moderatorCount', stats.moderator);
-    }
+        animateValue("adminCount", stats.admin);
+        animateValue("moderatorCount", stats.moderator);
+      }
 
-    function animateValue(elementId, end) {
+      function animateValue(elementId, end) {
         const element = document.getElementById(elementId);
         const start = parseInt(element.textContent);
         const duration = 1000;
@@ -584,137 +595,164 @@
         let step = 0;
 
         const timer = setInterval(() => {
-            step++;
-            current += increment;
-            element.textContent = Math.round(current);
-            if (step >= steps) {
-                element.textContent = end;
-                clearInterval(timer);
-            }
+          step++;
+          current += increment;
+          element.textContent = Math.round(current);
+          if (step >= steps) {
+            element.textContent = end;
+            clearInterval(timer);
+          }
         }, stepTime);
-    }
+      }
 
-    function displayUsers(users) {
-        const usersList = document.getElementById('usersList');
-        usersList.innerHTML = users.map(user => `
+      function displayUsers(users) {
+        const usersList = document.getElementById("usersList");
+        usersList.innerHTML = users
+          .map((user) => {
+            const role = getUserRole(user.claims);
+            return `
             <div class="user-item">
                 <div class="user-info">
-                    <div class="user-email">${user.email || 'No Email'}</div>
-                    ${user.displayName ? `<div class="user-name">${user.displayName}</div>` : ''}
+                    <div class="user-email">${user.email || "No Email"}</div>
+                    ${
+                      user.displayName
+                        ? `<div class="user-name">${user.displayName}</div>`
+                        : ""
+                    }
                     <div class="user-uid">UID: ${user.uid}</div>
                 </div>
-                ${user.claims && user.claims.role ? `
-                    <div class="badge badge-${user.claims.role}">
-                        <i class="fas fa-${getRoleIcon(user.claims.role)}"></i>
-                        ${user.claims.role}
+                ${
+                  role
+                    ? `
+                    <div class="badge badge-${role}">
+                        <i class="fas fa-${getRoleIcon(role)}"></i>
+                        ${role}
                     </div>
-                ` : ''}
+                `
+                    : ""
+                }
             </div>
-        `).join('');
-    }
+        `;
+          })
+          .join("");
+      }
 
-    function getRoleIcon(role) {
+      function getRoleIcon(role) {
         switch (role) {
-            case 'admin': return 'user-shield';
-            case 'moderator': return 'user-edit';
-            default: return 'user';
+          case "admin":
+            return "user-shield";
+          case "moderator":
+            return "user-edit";
+          default:
+            return "user";
         }
-    }
+      }
 
-    function populateUserSelect(users) {
-        const select = document.getElementById('userSelect');
-        select.innerHTML = '<option value="">Select a user...</option>' + 
-            users.map(user => `
-                <option value="${user.uid}">
-                    ${user.email || user.uid}
-                </option>
-            `).join('');
-    }
+      function populateUserSelect(users) {
+        const select = document.getElementById("userSelect");
+        select.innerHTML =
+          '<option value="">Select a user...</option>' +
+          users
+            .map(
+              (user) => `
+            <option value="${user.uid}">
+                ${user.email || user.uid}
+            </option>
+        `
+            )
+            .join("");
+      }
 
-    function confirmAction(action) {
-        const uid = document.getElementById('userSelect').value;
+      function confirmAction(action) {
+        const uid = document.getElementById("userSelect").value;
         if (!uid) {
-            showToast('Please select a user', 'error');
-            return;
+          showToast("Please select a user", "error");
+          return;
         }
 
         currentAction = action;
         selectedUser = uid;
-        const role = document.getElementById('roleSelect').value;
-        
-        const message = action === 'set' 
-            ? `Are you sure you want to set role "${role}" for this user?`
-            : 'Are you sure you want to remove the role from this user?';
-        
-        document.getElementById('confirmMessage').textContent = message;
-        document.getElementById('confirmModal').style.display = 'flex';
-    }
+        const role = document.getElementById("roleSelect").value;
 
-    function cancelAction() {
-        document.getElementById('confirmModal').style.display = 'none';
+        const message =
+          action === "set"
+            ? `Are you sure you want to set ${role} permissions for this user?`
+            : "Are you sure you want to remove all permissions from this user?";
+
+        document.getElementById("confirmMessage").textContent = message;
+        document.getElementById("confirmModal").style.display = "flex";
+      }
+
+      function cancelAction() {
+        document.getElementById("confirmModal").style.display = "none";
         currentAction = null;
         selectedUser = null;
-    }
+      }
 
-    async function executeAction() {
-        const confirmButton = document.getElementById('confirmButton');
+      async function executeAction() {
+        const confirmButton = document.getElementById("confirmButton");
         const uid = selectedUser;
-        const role = document.getElementById('roleSelect').value;
-        
+        const role = document.getElementById("roleSelect").value;
+
         try {
-            setLoading(confirmButton, true);
-            const endpoint = currentAction === 'set' ? '/api/setRole' : '/api/removeRole';
-            const response = await fetch(endpoint, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(currentAction === 'set' ? { uid, role } : { uid })
-            });
-            const data = await response.json();
-            
-            showToast(data.message, data.success ? 'success' : 'error');
-            
-            if (data.success) {
-                await loadUsers();
-            }
+          setLoading(confirmButton, true);
+          const endpoint =
+            currentAction === "set" ? "/api/setRole" : "/api/removeRole";
+          const response = await fetch(endpoint, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(
+              currentAction === "set" ? { uid, role } : { uid }
+            ),
+          });
+
+          const data = await response.json();
+          showToast(data.message, data.success ? "success" : "error");
+
+          if (data.success) {
+            await loadUsers();
+            await loadAllUsers();
+          }
         } catch (error) {
-            showToast('Failed to execute action: ' + error.message, 'error');
+          showToast("Failed to execute action: " + error.message, "error");
         } finally {
-            setLoading(confirmButton, false);
-            cancelAction();
+          setLoading(confirmButton, false);
+          cancelAction();
         }
-    }
+      }
 
-    function showToast(message, type = 'success') {
-        const toast = document.getElementById('toast');
-        const icon = type === 'success' ? 'check-circle' : 'exclamation-circle';
-        
+      function showToast(message, type = "success") {
+        const toast = document.getElementById("toast");
+        const icon = type === "success" ? "check-circle" : "exclamation-circle";
+
         toast.innerHTML = `
-            <i class="fas fa-${icon}"></i>
-            ${message}
-        `;
+        <i class="fas fa-${icon}"></i>
+        ${message}
+    `;
         toast.className = `toast toast-${type}`;
-        toast.style.display = 'flex';
-        
+        toast.style.display = "flex";
+
         setTimeout(() => {
-            toast.style.display = 'none';
+          toast.style.display = "none";
         }, 3000);
-    }
+      }
 
-    
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && document.getElementById('confirmModal').style.display === 'flex') {
-            cancelAction();
+      document.addEventListener("keydown", (e) => {
+        if (
+          e.key === "Escape" &&
+          document.getElementById("confirmModal").style.display === "flex"
+        ) {
+          cancelAction();
         }
-    });
+      });
 
-    
-    document.getElementById('confirmModal').addEventListener('click', (e) => {
-        if (e.target.id === 'confirmModal') {
-            cancelAction();
+      document.getElementById("confirmModal").addEventListener("click", (e) => {
+        if (e.target.id === "confirmModal") {
+          cancelAction();
         }
-    });
-</script>
-</body>
+      });
+    </script>
+  </body>
 </html>

@@ -2,7 +2,6 @@ const express = require('express');
 const admin = require('firebase-admin');
 const path = require('path');
 
-
 try {
     const serviceAccount = require('./serviceAccountKey.json');
     admin.initializeApp({
@@ -15,10 +14,8 @@ try {
 
 const app = express();
 
-
 app.use(express.json());
 app.use(express.static('public'));
-
 
 const errorHandler = (err, req, res, next) => {
     console.error('Error:', err);
@@ -28,7 +25,6 @@ const errorHandler = (err, req, res, next) => {
         error: process.env.NODE_ENV === 'development' ? err.message : undefined
     });
 };
-
 
 const validateRole = (req, res, next) => {
     const { role } = req.body;
@@ -53,7 +49,6 @@ const validateUID = (req, res, next) => {
     }
     next();
 };
-
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -94,8 +89,9 @@ app.get('/api/all-users', async (req, res, next) => {
 app.post('/api/setRole', [validateUID, validateRole], async (req, res, next) => {
     const { uid, role } = req.body;
     try {
-        await admin.auth().getUser(uid); 
-        await admin.auth().setCustomUserClaims(uid, { role });
+        await admin.auth().getUser(uid);
+        const claims = { [role]: true };
+        await admin.auth().setCustomUserClaims(uid, claims);
         res.json({ 
             success: true, 
             message: `Role ${role} set for user ${uid}`,
@@ -116,7 +112,7 @@ app.post('/api/setRole', [validateUID, validateRole], async (req, res, next) => 
 app.post('/api/removeRole', validateUID, async (req, res, next) => {
     const { uid } = req.body;
     try {
-        await admin.auth().getUser(uid); 
+        await admin.auth().getUser(uid);
         await admin.auth().setCustomUserClaims(uid, null);
         res.json({ 
             success: true, 
@@ -135,14 +131,12 @@ app.post('/api/removeRole', validateUID, async (req, res, next) => {
     }
 });
 
-
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
-
 
 process.on('SIGTERM', () => {
     console.log('SIGTERM received. Shutting down gracefully...');
